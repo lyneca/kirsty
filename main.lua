@@ -10,8 +10,8 @@ player = {
   vx = 0,
   vy = 0,
   speed = 4,
+  is_touching_ground = false,
 }
-d = 0
 
 function player.update(dt)
   if love.keyboard.isDown('left') then
@@ -22,9 +22,17 @@ function player.update(dt)
   end
   player.vx = player.vx * FRICTION
   player.x = player.x + player.vx
-  if player.y + player.h <= SCREEN_HEIGHT then
+  player.y = player.y + player.vy
+  if player.y + player.h < SCREEN_HEIGHT then
+    if player.is_touching_ground then
+      player.is_touching_ground = false
+    end
     player.vy = player.vy + GRAVITY * dt
-    player.y = player.y + player.vy
+  else
+    if not player.is_touching_ground then
+      player.is_touching_ground = true
+      player.vy = 0
+    end
   end
 end
 
