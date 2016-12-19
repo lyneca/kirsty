@@ -13,6 +13,17 @@ player = {
   speed = 4,
   is_touching_ground = false,
 }
+debug = ''
+function love.keypressed(key)
+  if key == 'up' then player.jump() end
+end
+
+function player.jump()
+  debug = 'jumped'
+  if player.is_touching_ground then
+    player.vy = -player.jump_speed
+  end
+end
 
 function love.keypressed(key)
   if key == 'up' then player.jump() end
