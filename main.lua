@@ -13,7 +13,23 @@ player = {
   speed = 4,
   is_touching_ground = false,
 }
-debug = ''
+
+Platform = {
+  x = 0,
+  y = 0,
+  w = 100,
+  h = 25
+}
+
+function Platform:new(x, y)
+  o = {}
+  setmetatable(o, self)
+  self.__index = self
+  o.x = x
+  o.y = y
+  return o
+end
+
 function love.keypressed(key)
   if key == 'up' then player.jump() end
 end
