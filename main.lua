@@ -1,7 +1,10 @@
+require 'table'
+
 FRICTION = 0.8
-GRAVITY = 9.8
+GRAVITY = 40
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 800
+
 player = {
   x = 50,
   y = 50,
@@ -9,7 +12,7 @@ player = {
   h = 70,
   vx = 0,
   vy = 0,
-  jump_speed = 6,
+  jump_speed = 15,
   speed = 4,
   is_touching_ground = false,
 }
@@ -21,12 +24,19 @@ Platform = {
   h = 25
 }
 
+platforms = {}
+
+function Platform:draw()
+  love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
+end
+
 function Platform:new(x, y)
   o = {}
   setmetatable(o, self)
   self.__index = self
   o.x = x
   o.y = y
+  table.insert(platforms, o)
   return o
 end
 
@@ -62,6 +72,14 @@ function player.update(dt)
   player.vx = player.vx * FRICTION
   player.x = player.x + player.vx
   player.y = player.y + player.vy
+  for k, platform in ipairs(platforms) do
+    if platform.x < player.x and player.x < platform.x + platform.w then
+      if platform.y < player.y + player.h and player.y + player.h < platform.y  + platform.h then
+        player.y = platform.y - player.h
+        player.is_touching_ground = true
+      end
+    end
+  end
   if player.y + player.h < SCREEN_HEIGHT then
     if player.is_touching_ground then
       player.is_touching_ground = false
@@ -76,7 +94,7 @@ function player.update(dt)
 end
 
 function love.load()
-
+  Platform:new(40, 500)
 end
 
 function love.update(dt)
@@ -84,6 +102,8 @@ function love.update(dt)
 end
 
 function love.draw()
-  love.graphics.print(tostring(player.is_touching_ground), 0, 0)
+  for k, platform in ipairs(platforms) do
+    platform:draw()
+  end
   love.graphics.rectangle('fill', player.x, player.y, player.w, player.h)
 end
