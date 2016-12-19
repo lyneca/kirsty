@@ -34,6 +34,7 @@ end
 
 function love.update(dt)
   player.update(dt)
+  print('hello')
 end
 
 function love.draw()
